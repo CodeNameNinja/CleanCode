@@ -1,0 +1,16 @@
+{
+  "name": "cleancode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "clean-code-guidelines.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "doc": "jsdoc -c jsdoc.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jsdoc": "^3.6.7"
+  }
+}
