@@ -1,6 +1,6 @@
 {
   "name": "cleancode",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "clean-code-guidelines.js",
   "scripts": {
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jsdoc": "^3.6.7"
+    "jsdoc": "^3.6.7",
+    "standard-version": "^9.3.0"
   }
 }
