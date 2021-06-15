@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Tutorial: Clean Code Guidelines</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Tutorial: Clean Code Guidelines</h1>
+
+    <section>
+
+<header>
+    
+
+    <h2>Clean Code Guidelines</h2>
+</header>
+
+<article>
+    <h5>Here is some guidelines that I would like to outline, to help myself and anyone who comes across this documentation.</h5>
+<h5>the following is a summary of what I have learnt in the Udemy Course by</h5>
+<p><strong>Maximilian Schwarzmüller - Academind</strong></p>
+<h5><a href="https://www.udemy.com/course/writing-clean-code/learn/">Clean Code Course</a></h5>
+<hr>
+<h3>Topics</h3>
+<ol>
+<li>Naming - Assigning Names to Variables, Functions &amp; classes</li>
+<li>Code Structure, Comments &amp; Formatting</li>
+<li>Functions &amp; Methods</li>
+<li>Control Structures &amp; Errors</li>
+<li>Objects, Classes &amp; Data Containers / Structures</li>
+</ol>
+<h2>Naming</h2>
+<h4>Why Good Names Matter</h4>
+<p>Names should be meaningful, and should transport what a variable or method/function should do.</p>
+<p>Here is an example of a poorly names piece of code:</p>
+<pre class="prettyprint source"><code>const us = new MainEntity();
+us.process();
+if(login){
+    //...
+}
+</code></pre>
+<p>as you can see nothing really makes sense from the get go. nothing is straight forward and this code will mean that you will have to dig deeper into each function and variable to understand its meaning.</p>
+<p>take a look at an example where we refactor the above into code that is more easy to understand.</p>
+<pre class="prettyprint source"><code>class User {
+  save() {}
+}
+
+const isLoggedIn = true;
+
+const user = new User();
+user.save();
+
+if (isLoggedIn) {
+  // ...
+}
+</code></pre>
+<p>as you can see, its the same code, but way easier to read and understand.</p>
+<p>in conclusion to this, well-named &quot;things&quot; allow readers to <strong>understand your code without going through it in detail</strong></p>
+<hr>
+<h3>1.How to name things correctly</h3>
+<h4><strong>variable &amp; Constants</strong></h4>
+<p>Use nouns or short phrases with adjectives
+e.g</p>
+<pre class="prettyprint source"><code>const userData = {...} 
+</code></pre>
+<p>or</p>
+<pre class="prettyprint source"><code>const isValid = ... 
+</code></pre>
+<h4><strong>Functions &amp; Methods</strong></h4>
+<p>use verbs or short phrases with adjectives
+e.g</p>
+<pre class="prettyprint source"><code>sendData();
+inputIsValid();
+</code></pre>
+<h4><strong>Classes</strong></h4>
+<p>use nouns or short phrases with nouns</p>
+<pre class="prettyprint source"><code>class User {...}
+class RequestBody {...}
+</code></pre>
+<hr>
+<h3>Name Casings</h3>
+<table>
+<thead>
+<tr>
+<th>snake_case</th>
+<th>camelCase</th>
+<th>PasacalCase</th>
+<th>kebab-case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>is_valid</td>
+<td>isValid; SendResponse</td>
+<td>AdminRole; UserRepository</td>
+<td><code>&lt;side-drawer&gt;</code></td>
+</tr>
+<tr>
+<td>e.g Python, PHP</td>
+<td>Java, Javascript</td>
+<td>Python, Java, Javascript</td>
+<td>e.g HTML</td>
+</tr>
+<tr>
+<td>Variables, functions, methods</td>
+<td>Variables, functions, method</td>
+<td>Classes</td>
+<td>Custom HTML elements</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3>2. Code Structure, Comments &amp; Formatting</h3>
+<h4>Bad Comments include the following:</h4>
+<ol>
+<li>Redudent information</li>
+<li>Dividers/Blockers</li>
+<li>Misleading information</li>
+<li>Commented out code.</li>
+</ol>
+<h4>Good Comments include the following:</h4>
+<ol>
+<li>Legal Information</li>
+<li>Explanation which can’t be replaced by good meaning</li>
+<li>Warnings</li>
+<li>Documentation</li>
+</ol>
+<h4>Code Formatting</h4>
+<p>Code Formatting improves Readability &amp; Transports Meaning</p>
+<p>There are two areas of formatting to consider</p>
+<ol>
+<li>Vertical Formatting</li>
+<li>Horizontal Formatting</li>
+</ol>
+<h5>Vertical Formatting</h5>
+<ol>
+<li>Vertical Space Between Lines</li>
+<li>Grouping of Code</li>
+</ol>
+<h5>Horizontal Formatting</h5>
+<ol>
+<li>Indentation</li>
+<li>Space Between Code</li>
+</ol>
+<hr>
+<h3>Functions &amp; Methods</h3>
+<h4>What makes up a function?</h4>
+<p>Calling the function should be readable and working with the function should be easy / readable</p>
+<p>therefore the number and order of arguments matter and the length of the function body matters.</p>
+<h4>Minimize the number of parameters</h4>
+<p>why? Because the more parameters a function uses the more dificult it becomes to use.</p>
+<p>A function with no parameters is the simplest function to call and read and this should always be the goal when creating a function.</p>
+<p>of course there will be situations where you will need to use parameters and from there obviously 1 parameters is the next best thing to no parameters.</p>
+<p>2 Parameters starts to become more tricky to understand as it requires more information in order to get the function to run, a function with 2 parameters is acceptable but should be used with caution.</p>
+<p>3 Arguments is really difficult to understand and is usually challenging to call and should be avoided if possible. its usually difficult to determine the order of arguments and that inherentily becomes more complex and difficult to understand.</p>
+<p>any function with more than 3 arguments should be avoided at all costs because its extemly difficult to understand and maintain. there are solutions to handle functions that require so many arguments. which is explained in the next chapter.</p>
+<h4>Refactoring Functions that have multiple params.</h4>
+<pre class="prettyprint source"><code>function saveUser(email, password){
+    const user = {
+        id: Math.random().toString(),
+        email:email,
+        password: password
+    }
+    db.insert('users', user);
+}
+
+saveUser('user@test.com' , '123');
+
+</code></pre>
+<p>This is not terrible code and does make sense when reading it, however it can be refactored to use less parameters. Take the following code as an example where we outsouce the user argument and parse in a single argument to the function.</p>
+<pre class="prettyprint source"><code>function saveUser(user){
+    db.insert('users',user)
+}
+
+</code></pre>
+<p>the above is better because it only takes in one argument for the function to work, and that greatly simplifies the calling of the function. The better solution would be to lift this functionality into a class based approach, such as the following:</p>
+<pre class="prettyprint source"><code>class User{
+    constructor(userData){
+        this.email = userData.email;
+        this.password = userData.password;
+        this.id = Math.random().toString();
+    }
+
+    save(){
+        db.insert('users',this);
+    }
+}
+
+const user = new User({email: 'test.user.com', password: '123'})
+user.save();
+
+</code></pre>
+<p>This is much better as its very easy to read and you can immediately see what is expected to get a user object.</p>
+<h4>functions should be small and do one thing.</h4>
+<p>As developers we often get carried away with writing huge chunks of code and often forget to split our functions into smaller and more meaningful functions. This</p>
+<p>in general a function can have code naming and formatting, but a monolithic function that handles multiple things all at once is still consider bad code. This
+its okay to write more code if it adds readability and clarity to what it is that you are trying to achieve. This</p>
+<p>take the below bad code as an example:</p>
+<pre class="prettyprint source"><code>function renderContent(renderInformation) {
+  const element = renderInformation.element;
+  if (element === 'script' || element === 'SCRIPT') {
+    throw new Error('Invalid element.');
+  }
+
+  let partialOpeningTag = '&lt;' + element;
+
+  const attributes = renderInformation.attributes;
+
+  for (const attribute of attributes) {
+    partialOpeningTag =
+      partialOpeningTag + ' ' + attribute.name + '=&quot;' + attribute.value + '&quot;';
+  }
+
+  const openingTag = partialOpeningTag + '>';
+
+  const closingTag = '&lt;/' + element + '>';
+  const content = renderInformation.content;
+
+  const template = openingTag + content + closingTag;
+
+  const rootElement = renderInformation.root;
+
+  rootElement.innerHTML = template;
+}
+
+</code></pre>
+<p>as you can see this function is trying to do to much at once. whereas we can outsouce each concept into smaller chunks which will allow us to read the operations more precisely. we can refactor the above to the following: we</p>
+<pre class="prettyprint source"><code>function renderContent(renderInformation) {
+  const element = renderInformation.element;
+  const rootElement = renderInformation.root;
+
+  validateElementType(element);
+
+  const content = createRenderableContent(renderInformation);
+
+  renderOnRoot(rootElement, content);
+}
+
+function validateElementType(element) {
+  if (element === 'script' || element === 'SCRIPT') {
+    throw new Error('Invalid element.');
+  }
+}
+
+function createRenderableContent(renderInformation) {
+  const tags = createTags(
+    renderInformation.element,
+    renderInformation.attributes
+  );
+  const template = tags.opening + renderInformation.content + tags.closing;
+  return template;
+}
+
+function renderOnRoot(root, template) {
+  root.innerHTML = template;
+}
+
+function createTags(element, attributes) {
+  const attributeList = generateAttributesList(attributes);
+  const openingTag = buildTag({
+    element: element,
+    attributes: attributeList,
+    isOpening: true,
+  });
+  const closingTag = buildTag({
+    element: element,
+    isOpening: false,
+  });
+
+  return { opening: openingTag, closing: closingTag };
+}
+
+function generateAttributesList(attributes) {
+  let attributeList = '';
+  for (const attribute of attributes) {
+    attributeList = `${attributeList} ${attribute.name}=&quot;${attribute.value}&quot;`;
+  }
+
+  return attributeList;
+}
+
+function buildTag(tagInformation) {
+  const element = tagInformation.element;
+  const attributes = tagInformation.attributes;
+  const isOpeningTag = tagInformation.isOpening;
+
+  let tag;
+  if (isOpeningTag) {
+    tag = '&lt;' + element + attributes + '>';
+  } else {
+    tag = '&lt;/' + element + '>';
+  }
+
+  return tag;
+}
+
+</code></pre>
+<p>as you can immediately tell this is alot more code, but you can identify each function individually and read each function with more clarity than before.</p>
+<h4>functions should do one thing and what is one thing?</h4>
+<p>One thing can be thought of in terms of operations and levels of abstraction.</p>
+<h4>understanding levels of abstraction</h4>
+<p>So when it comes to abstraction you have a range of levels.</p>
+<ol>
+<li>High Level</li>
+<li>Low Levels</li>
+</ol>
+<p>High levels can be thought of as user defined functions
+e.g</p>
+<pre class="prettyprint source"><code>isEmail(email)
+
+</code></pre>
+<p>Low Level abstractions is usually language or programme specific low level api and methods.</p>
+<p>e.g</p>
+<pre class="prettyprint source"><code>email.includes('@);
+</code></pre>
+<p>in High Level operations we don't control how the email is validated - we just want it to be validated. So</p>
+<p>in Low level operations, we control how the email is validated.</p>
+<p>Something else to note is that high level abstractions usually are easy to read - there is no room for interpretation, whereas low level operations might be technically clear but the interpretation must be added by the reader</p>
+</article>
+
+</section>
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calculator.html">calculator</a></li></ul><h3>Classes</h3><ul><li><a href="Person.html">Person</a></li><li><a href="User.html">User</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-Clean-Code-Guidelines.html">Clean Code Guidelines</a></li><li><a href="tutorial-calculator-tutorial.html">Calculator Tutorial</a></li><li><a href="tutorial-program-tutorial.html">Program Tutorial</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addId">addId</a></li><li><a href="global.html#calculateTax">calculateTax</a></li><li><a href="global.html#grades">grades</a></li><li><a href="global.html#person1">person1</a></li><li><a href="global.html#student">student</a></li><li><a href="global.html#studentName">studentName</a></li><li><a href="global.html#sumUp">sumUp</a></li><li><a href="global.html#todo">todo</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 14 2021 22:02:49 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

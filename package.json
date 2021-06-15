@@ -5,7 +5,8 @@
   "main": "clean-code-guidelines.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "doc": "jsdoc -c jsdoc.json"
+    "doc": "jsdoc -c jsdoc.json",
+    "release": "standard-version"
   },
   "keywords": [],
   "author": "",

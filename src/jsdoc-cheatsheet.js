@@ -1,4 +1,10 @@
 const { add, subtract } = require('./jsdoc-cheatsheet-module');
+
+/**
+ * @file jsdoc-cheatsheet.js is the root for learning documentation for js projects.
+ * @author Mitchell Yuen
+ */
+
 /**
  * Student Name
  * @type {string}
