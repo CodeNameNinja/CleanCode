@@ -9,7 +9,7 @@
 1. Naming - Assigning Names to Variables, Functions & classes
 2. Code Structure, Comments & Formatting
 3. Functions & Methods
-4. Control Structures & Errors
+4. [Control Structures & Errors](./tutorial-Control-Structures.html)
 5. Objects, Classes & Data Containers / Structures
 
 ## Naming

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Tutorial: Control-Structures</title>
+    <title>JSDoc: Tutorial: Control Structures</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,14 +17,14 @@
 
 <div id="main">
 
-    <h1 class="page-title">Tutorial: Control-Structures</h1>
+    <h1 class="page-title">Tutorial: Control Structures</h1>
 
     <section>
 
 <header>
     
 
-    <h2>Control-Structures</h2>
+    <h2>Control Structures</h2>
 </header>
 
 <article>
@@ -38,6 +38,198 @@
 <pre class="prettyprint source lang-javascript"><code>if isEmpty vs if !isNotEmpty)
 </code></pre>
 <p>as well as <a href="#utilize-errors">utilize errors</a></p>
+<h4>Introducing Guards</h4>
+<p>We will be working on the following code throughout this chapter.
+<a name="example"></a></p>
+<pre class="prettyprint source lang-javascript"><code>function processTransactions(transactions) {
+  if (transactions && transactions.length > 0) {
+    for (const transaction of transactions) {
+      if (transaction.type === &quot;PAYMENT&quot;) {
+        if (transaction.status === &quot;OPEN&quot;) {
+          if (transaction.method === &quot;CREDIT_CARD&quot;) {
+            processCreditCardPayment(transaction);
+          } else if (transaction.method === &quot;PAYPAL&quot;) {
+            processPayPalPayment(transaction);
+          } else if (transaction.method === &quot;PLAN&quot;) {
+            processPlanPayment(transaction);
+          }
+        } else {
+          console.log(&quot;Invalid transaction type!&quot;);
+        }
+      } else if (transaction.type === &quot;REFUND&quot;) {
+        if (transaction.status === &quot;OPEN&quot;) {
+          if (transaction.method === &quot;CREDIT_CARD&quot;) {
+            processCreditCardRefund(transaction);
+          } else if (transaction.method === &quot;PAYPAL&quot;) {
+            processPayPalRefund(transaction);
+          } else if (transaction.method === &quot;PLAN&quot;) {
+            processPlanRefund(transaction);
+          }
+        } else {
+          console.log(&quot;Invalid transaction type!&quot;, transaction);
+        }
+      } else {
+        console.log(&quot;Invalid transaction type!&quot;, transaction);
+      }
+    }
+  } else {
+    console.log(&quot;No transactions provided!&quot;);
+  }
+}
+</code></pre>
+<p>as you can clearly tell, having a look at the above code is an eye sore and totally overwhelming.</p>
+<p>this is where we can introduce the technique of</p>
+<blockquote>
+<p>Guards and Fail Fast</p>
+</blockquote>
+<p>take a look at the following:</p>
+<pre class="prettyprint source lang-javascript"><code>if (email.includes(&quot;@&quot;)) {
+  // do stuff
+}
+</code></pre>
+<p>as you can see if this statement we can add a lot of code within the if block as per the <a href="#example">first example</a></p>
+<p>where as refactoring to the below code:</p>
+<pre class="prettyprint source lang-javascript"><code>if (!email.includes(&quot;@&quot;)) {
+  return;
+}
+//do stuff
+</code></pre>
+<p>now you can begin to understand the concept of adding a Guard and Fail Fast.</p>
+<p>immediately when this programme runs it will validate and return back if it fails. Notice how we use the inverse in the if statement to achieve this.</p>
+<p>lets add a Guard to the <a href="#example">first example</a></p>
+<pre class="prettyprint source lang-javascript"><code>function processTransactions(transactions) {
+  if (!transactions || transactions.length === 0) {
+    // Guard 1. check if there are no transactions
+    console.log(&quot;No transactions provided!&quot;);
+    return;
+  }
+  for (const transaction of transactions) {
+    if (!transaction.status !== &quot;OPEN&quot;) {
+      // Guard 2. check if the status is not open
+      console.log(&quot;Invalid transaction type!&quot;);
+      continue; // this means stop the current iteration and move onto the next iteration as we are in a loop
+    }
+    if (transaction.type === &quot;PAYMENT&quot;) {
+      if (transaction.method === &quot;CREDIT_CARD&quot;) {
+        processCreditCardPayment(transaction);
+      } else if (transaction.method === &quot;PAYPAL&quot;) {
+        processPayPalPayment(transaction);
+      } else if (transaction.method === &quot;PLAN&quot;) {
+        processPlanPayment(transaction);
+      }
+    } else if (transaction.type === &quot;REFUND&quot;) {
+      if (transaction.method === &quot;CREDIT_CARD&quot;) {
+        processCreditCardRefund(transaction);
+      } else if (transaction.method === &quot;PAYPAL&quot;) {
+        processPayPalRefund(transaction);
+      } else if (transaction.method === &quot;PLAN&quot;) {
+        processPlanRefund(transaction);
+      }
+    } else {
+      console.log(&quot;Invalid transaction type!&quot;, transaction);
+    }
+  }
+}
+</code></pre>
+<p>as you can tell this is way fewer lines and slightly better to read and digest.</p>
+<h4>Extracting Control Structures &amp; Preferring Positive Phrasing</h4>
+<p>another issue with this <a href="#example">example</a> is that we are mixing levels of abstraction.</p>
+<p>we can begin by outsourcing some of the lower level abstractions to separate function, the benefits with this aswell is that it allows us to use positive wording.</p>
+<p>lets outsource this chunk of validation to a separate function</p>
+<pre class="prettyprint source lang-javascript"><code>if (!transactions || transactions.length === 0) {
+  // Guard 1. check if there are no transactions
+  console.log(&quot;No transactions provided!&quot;);
+  return;
+}
+</code></pre>
+<p>to (Positive Checks/Phrasing)</p>
+<pre class="prettyprint source lang-javascript"><code>function isEmpty(transactions) {
+  return !transactions || transactions.length == 0;
+}
+</code></pre>
+<p><a name="positive-checks"></a>
+Remember its always easier to read positive language than negative
+and adding the code into a function with a positive name &quot;isEmpty()&quot; we already are utilizing the Positive Checks rule</p>
+<pre class="prettyprint source lang-javascript"><code>
+function processTransactions(transactions) {
+  if(isEmpty(transactions)){
+      console.log(&quot;No transactions provided!&quot;); // &lt;- this also violates the levels of abstraction and should also be moved to a separate function
+      return;
+  }
+</code></pre>
+<p>add a function showErrorMessage</p>
+<pre class="prettyprint source lang-javascript"><code>function showErrorMessage(message) {
+  console.log(showErrorMessage);
+}
+</code></pre>
+<p>so this all finally becomes.</p>
+<pre class="prettyprint source lang-javascript"><code>function processTransactions(transactions) {
+  if(isEmpty(transactions)){
+      showErrorMessage(&quot;No transactions provided!&quot;); // &lt;- this also violates the levels of abstraction and should also be moved to a separate function
+      return;
+  }
+</code></pre>
+<p>next we can go back to our <a href="#example">example</a> and see what else we can separate.</p>
+<p>we can immediately tell we can section of this chunk of code into a separate function</p>
+<pre class="prettyprint source lang-javascript"><code>if (transaction.type === &quot;PAYMENT&quot;) {
+  if (transaction.method === &quot;CREDIT_CARD&quot;) {
+    processCreditCardPayment(transaction);
+  } else if (transaction.method === &quot;PAYPAL&quot;) {
+    processPayPalPayment(transaction);
+  } else if (transaction.method === &quot;PLAN&quot;) {
+    processPlanPayment(transaction);
+  }
+} else if (transaction.type === &quot;REFUND&quot;) {
+  if (transaction.method === &quot;CREDIT_CARD&quot;) {
+    processCreditCardRefund(transaction);
+  } else if (transaction.method === &quot;PAYPAL&quot;) {
+    processPayPalRefund(transaction);
+  } else if (transaction.method === &quot;PLAN&quot;) {
+    processPlanRefund(transaction);
+  }
+} else {
+  console.log(&quot;Invalid transaction type!&quot;, transaction);
+}
+</code></pre>
+<p>lets creat a new function call processTransaction</p>
+<pre class="prettyprint source lang-javascript"><code>processTransaction(transaction){
+     if (!transaction.status !== &quot;OPEN&quot;) {
+      console.log(&quot;Invalid transaction type!&quot;);
+      return;
+    }
+    if (transaction.type === &quot;PAYMENT&quot;) {
+  if (transaction.method === &quot;CREDIT_CARD&quot;) {
+    processCreditCardPayment(transaction);
+  } else if (transaction.method === &quot;PAYPAL&quot;) {
+    processPayPalPayment(transaction);
+  } else if (transaction.method === &quot;PLAN&quot;) {
+    processPlanPayment(transaction);
+  }
+} else if (transaction.type === &quot;REFUND&quot;) {
+  if (transaction.method === &quot;CREDIT_CARD&quot;) {
+    processCreditCardRefund(transaction);
+  } else if (transaction.method === &quot;PAYPAL&quot;) {
+    processPayPalRefund(transaction);
+  } else if (transaction.method === &quot;PLAN&quot;) {
+    processPlanRefund(transaction);
+  }
+} else {
+  console.log(&quot;Invalid transaction type!&quot;, transaction);
+}
+}
+</code></pre>
+<p>and we can add this to our for loop as such</p>
+<pre class="prettyprint source lang-javascript"><code>function processTransactions(transactions) {
+  if (!transactions || transactions.length === 0) {
+    // Guard 1. check if there are no transactions
+    console.log(&quot;No transactions provided!&quot;);
+    return;
+  }
+  for (const transaction of transactions) {
+    processTransaction(transaction);
+  }
+}
+</code></pre>
 </article>
 
 </section>
@@ -45,13 +237,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calculator.html">calculator</a></li></ul><h3>Classes</h3><ul><li><a href="Person.html">Person</a></li><li><a href="User.html">User</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-Clean-Code-Guidelines.html">Clean Code Guidelines</a></li><li><a href="tutorial-Control-Structures.html">Control-Structures</a></li><li><a href="tutorial-git.html">Git</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addId">addId</a></li><li><a href="global.html#calculateTax">calculateTax</a></li><li><a href="global.html#grades">grades</a></li><li><a href="global.html#person1">person1</a></li><li><a href="global.html#student">student</a></li><li><a href="global.html#studentName">studentName</a></li><li><a href="global.html#sumUp">sumUp</a></li><li><a href="global.html#todo">todo</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calculator.html">calculator</a></li></ul><h3>Classes</h3><ul><li><a href="Person.html">Person</a></li><li><a href="User.html">User</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-Clean-Code-Guidelines.html">Clean Code Guidelines</a></li><li><a href="tutorial-Control-Structures.html">Control Structures</a></li><li><a href="tutorial-git.html">Git</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addId">addId</a></li><li><a href="global.html#calculateTax">calculateTax</a></li><li><a href="global.html#grades">grades</a></li><li><a href="global.html#person1">person1</a></li><li><a href="global.html#student">student</a></li><li><a href="global.html#studentName">studentName</a></li><li><a href="global.html#sumUp">sumUp</a></li><li><a href="global.html#todo">todo</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 16 2021 10:37:02 GMT+0200 (South Africa Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 16 2021 11:34:16 GMT+0200 (South Africa Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
