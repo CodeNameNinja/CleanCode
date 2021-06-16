@@ -251,3 +251,418 @@ function processTransactions(transactions) {
   }
 }
 ```
+
+#### Writing Clean Functions With Control Structures
+
+taking a look at everything we done previously, we can already see the huge improvments we have made with refactoring the code, however there are still a couple improvments we can make to simplify the code further and increase readablity.
+
+take a look at how I refactor what we have into something more readable.
+
+```javascript
+function processTransactions(transactions) {
+  if (isEmpty(transactions)) {
+    showErrorMessage("No transactions provided!");
+    return;
+  }
+
+  for (const transaction of transactions) {
+    processTransaction(transaction);
+  }
+}
+
+function isEmpty(transactions) {
+  return !transactions || transactions.length === 0;
+}
+
+function showErrorMessage(message, item) {
+  console.log(message);
+  if (item) {
+    console.log(item);
+  }
+}
+
+function processTransaction(transaction) {
+  if (!isOpen(transaction)) {
+    showErrorMessage("Invalid transaction type!");
+    return;
+  }
+  if (isPayment(transaction)) {
+    processPayment(transaction);
+  } else if (isRefund(transaction)) {
+    processRefund(transaction);
+  } else {
+    showErrorMessage("Invalid transaction type!", transaction);
+  }
+}
+
+function isOpen(transaction) {
+  return transaction.status === "OPEN";
+}
+
+function isPayment(transaction) {
+  return transaction.type === "PAYMENT";
+}
+
+function isRefund(transaction) {
+  return transaction.type === "REFUND";
+}
+
+function processPayment(paymentTransaction) {
+  if (paymentTransaction.method === "CREDIT_CARD") {
+    processCreditCardPayment(paymentTransaction);
+  } else if (paymentTransaction.method === "PAYPAL") {
+    processPayPalPayment(paymentTransaction);
+  } else if (paymentTransaction.method === "PLAN") {
+    processPlanPayment(paymentTransaction);
+  }
+}
+
+function processRefund(refundTransaction) {
+  if (refundTransaction.method === "CREDIT_CARD") {
+    processCreditCardRefund(refundTransaction);
+  } else if (refundTransaction.method === "PAYPAL") {
+    processPayPalRefund(refundTransaction);
+  } else if (refundTransaction.method === "PLAN") {
+    processPlanRefund(refundTransaction);
+  }
+}
+
+function processCreditCardPayment(transaction) {
+  console.log(
+    "Processing credit card payment for amount: " + transaction.amount
+  );
+}
+
+function processCreditCardRefund(transaction) {
+  console.log(
+    "Processing credit card refund for amount: " + transaction.amount
+  );
+}
+
+function processPayPalPayment(transaction) {
+  console.log("Processing PayPal payment for amount: " + transaction.amount);
+}
+
+function processPayPalRefund(transaction) {
+  console.log("Processing PayPal refund for amount: " + transaction.amount);
+}
+
+function processPlanPayment(transaction) {
+  console.log("Processing plan payment for amount: " + transaction.amount);
+}
+
+function processPlanRefund(transaction) {
+  console.log("Processing plan refund for amount: " + transaction.amount);
+}
+```
+
+now everything is more concise and readable. Each function is clear as to what is going on, and we can argue that mostly everything is good in terms of levels of abstraction.
+
+however can you see a problem with the code that we have?
+
+take a look at these two functions
+
+```javascript
+processPayment();
+processRefund();
+```
+
+both these functions duplicate code and we should stay DRY(Don't repeat yourself) as possible.
+
+lets do a bit more refactoring but adding a couple functions as the following:
+
+```javascript
+function usesTransactionMethod(transaction, method) {
+  return transaction.method === method;
+}
+```
+
+and
+
+```javascript
+function processCreditCardTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processCreditCardPayment();
+  } else if (isRefund(transaction)) {
+    processCreditCardRefund();
+  } else {
+    showErrorMessage("Invalid transaction type!", transaction);
+  }
+}
+
+function processPayPalTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processPayPalPayment();
+  } else if (isRefund(transaction)) {
+    processPayPalRefund();
+  } else {
+    showErrorMessage("Invalid transaction type!", transaction);
+  }
+}
+function processPlanTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processPlanPayment();
+  } else if (isRefund(transaction)) {
+    processPlanRefund();
+  } else {
+    showErrorMessage("Invalid transaction type!", transaction);
+  }
+}
+```
+and now put it all together
+
+```javascript
+
+function processTransactions(transactions) {
+  if (isEmpty(transactions)) {
+    showErrorMessage('No transactions provided!');
+    return;
+  }
+
+  for (const transaction of transactions) {
+    processTransaction(transaction);
+  }
+}
+
+function isEmpty(transactions) {
+  return !transactions || transactions.length === 0;
+}
+
+function showErrorMessage(message, item) {
+  console.log(message);
+  if (item) {
+    console.log(item);
+  }
+}
+
+function processTransaction(transaction) {
+  if (!isOpen(transaction)) {
+    showErrorMessage('Invalid transaction type!');
+    return;
+  }
+
+  if (usesTransactionMethod(transaction, 'CREDIT_CARD')) {
+    processCreditCardTransaction(transaction);
+  } else if (usesTransactionMethod(transaction, 'PAYPAL')) {
+    processPayPalTransaction(transaction);
+  } else if (usesTransactionMethod(transaction, 'PLAN')) {
+    processPlanTransaction(transaction);
+  }
+}
+
+function isOpen(transaction) {
+  return transaction.status === 'OPEN';
+}
+
+function usesTransactionMethod(transaction, method) {
+  return transaction.method === method;
+}
+
+function isPayment(transaction) {
+  return transaction.type === 'PAYMENT';
+}
+
+function isRefund(transaction) {
+  return transaction.type === 'REFUND';
+}
+
+function processCreditCardTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processCreditCardPayment();
+  } else if (isRefund(transaction)) {
+    processCreditCardRefund();
+  } else {
+    showErrorMessage('Invalid transaction type!', transaction);
+  }
+}
+
+function processPayPalTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processPayPalPayment();
+  } else if (isRefund(transaction)) {
+    processPayPalRefund();
+  } else {
+    showErrorMessage('Invalid transaction type!', transaction);
+  }
+}
+
+function processPlanTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processPlanPayment();
+  } else if (isRefund(transaction)) {
+    processPlanRefund();
+  } else {
+    showErrorMessage('Invalid transaction type!', transaction);
+  }
+}
+
+```
+
+### Embrace Errors & Error Handling ###
+Throwing = handling errors can replace if statements and lead to more focused functions
+>simple rule: if something is an error -> make it an error.
+
+```javascript
+if(!isEmail){
+    return {code: 422, message: "Invalid input"}
+}
+```
+we should use built in error handling logic
+```javascript
+if(!isEmail){
+    const error = new Error('Invalid Input');
+    error.code = 422;
+    throw error;
+}
+```
+
+<a name="factory-functions"></a>
+<a name="polymorphism"></a>
+
+### Factory Functions and Polymorphism ###
+
+#### What is a Factory Function? ####
+
+A factory function is simply a function which is used to produce something, for example, to produce objects
+or produce maps, arrays, anything like that. We provide a certain input, and it then produces a certain object for us.
+
+#### What is Polymorphism? ####
+It means that we can have an object or a function, which we can always use in the same way,
+for example, an object on which we always can use the same method, but what this method does in detail,
+then depends on some other factors.
+
+Lets refactor the code we have been working on to use a factory function to handle processing Payments and Refunds.
+
+```javascript
+main();
+
+function main() {
+  try {
+    processTransactions(transactions);
+  } catch (error) {
+    showErrorMessage(error.message);
+  }
+}
+
+function processTransactions(transactions) {
+  validateTransactions(transactions);
+
+  for (const transaction of transactions) {
+    processTransaction(transaction);
+  }
+}
+
+function validateTransactions(transactions) {
+  if (isEmpty(transactions)) {
+    const error = new Error('No transactions provided!');
+    error.code = 1;
+    throw error;
+  }
+}
+
+function isEmpty(transactions) {
+  return !transactions || transactions.length === 0;
+}
+
+function showErrorMessage(message, item) {
+  console.log(message);
+  if (item) {
+    console.log(item);
+  }
+}
+
+function processTransaction(transaction) {
+  try {
+    validateTransaction(transaction);
+    processWithProcessor(transaction);
+  } catch (error) {
+    showErrorMessage(error.message, error.item);
+  }
+}
+
+function isOpen(transaction) {
+  return transaction.status === 'OPEN';
+}
+
+function validateTransaction(transaction) {
+  if (!isOpen(transaction)) {
+    const error = new Error('Invalid transaction type.');
+    throw error;
+  }
+
+  if (!isPayment(transaction) && !isRefund(transaction)) {
+    const error = new Error('Invalid transaction type!');
+    error.item = transaction;
+    throw error;
+  }
+}
+
+function processWithProcessor(transaction) {
+  const processors = getTransactionProcessors(transaction);
+
+  if (isPayment(transaction)) {
+    processors.processPayment(transaction);
+  } else {
+    processors.processRefund(transaction);
+  }
+}
+
+function getTransactionProcessors(transaction) {
+  let processors = {
+    processPayment: null,
+    processRefund: null,
+  };
+  if (usesTransactionMethod(transaction, 'CREDIT_CARD')) {
+    processors.processPayment = processCreditCardPayment;
+    processors.processRefund = processCreditCardRefund;
+  } else if (usesTransactionMethod(transaction, 'PAYPAL')) {
+    processors.processPayment = processPayPalPayment;
+    processors.processRefund = processPayPalRefund;
+  } else if (usesTransactionMethod(transaction, 'PLAN')) {
+    processors.processPayment = processPlanPayment;
+    processors.processRefund = processPlanRefund;
+  }
+  return processors;
+}
+
+function usesTransactionMethod(transaction, method) {
+  return transaction.method === method;
+}
+
+function isPayment(transaction) {
+  return transaction.type === 'PAYMENT';
+}
+
+function isRefund(transaction) {
+  return transaction.type === 'REFUND';
+}
+
+function processCreditCardPayment(transaction) {
+  console.log(
+    'Processing credit card payment for amount: ' + transaction.amount
+  );
+}
+
+function processCreditCardRefund(transaction) {
+  console.log(
+    'Processing credit card refund for amount: ' + transaction.amount
+  );
+}
+
+function processPayPalPayment(transaction) {
+  console.log('Processing PayPal payment for amount: ' + transaction.amount);
+}
+
+function processPayPalRefund(transaction) {
+  console.log('Processing PayPal refund for amount: ' + transaction.amount);
+}
+
+function processPlanPayment(transaction) {
+  console.log('Processing plan payment for amount: ' + transaction.amount);
+}
+
+function processPlanRefund(transaction) {
+  console.log('Processing plan refund for amount: ' + transaction.amount);
+}
+
+```

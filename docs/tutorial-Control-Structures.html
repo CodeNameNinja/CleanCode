@@ -230,6 +230,392 @@ function processTransactions(transactions) {
   }
 }
 </code></pre>
+<h4>Writing Clean Functions With Control Structures</h4>
+<p>taking a look at everything we done previously, we can already see the huge improvments we have made with refactoring the code, however there are still a couple improvments we can make to simplify the code further and increase readablity.</p>
+<p>take a look at how I refactor what we have into something more readable.</p>
+<pre class="prettyprint source lang-javascript"><code>function processTransactions(transactions) {
+  if (isEmpty(transactions)) {
+    showErrorMessage(&quot;No transactions provided!&quot;);
+    return;
+  }
+
+  for (const transaction of transactions) {
+    processTransaction(transaction);
+  }
+}
+
+function isEmpty(transactions) {
+  return !transactions || transactions.length === 0;
+}
+
+function showErrorMessage(message, item) {
+  console.log(message);
+  if (item) {
+    console.log(item);
+  }
+}
+
+function processTransaction(transaction) {
+  if (!isOpen(transaction)) {
+    showErrorMessage(&quot;Invalid transaction type!&quot;);
+    return;
+  }
+  if (isPayment(transaction)) {
+    processPayment(transaction);
+  } else if (isRefund(transaction)) {
+    processRefund(transaction);
+  } else {
+    showErrorMessage(&quot;Invalid transaction type!&quot;, transaction);
+  }
+}
+
+function isOpen(transaction) {
+  return transaction.status === &quot;OPEN&quot;;
+}
+
+function isPayment(transaction) {
+  return transaction.type === &quot;PAYMENT&quot;;
+}
+
+function isRefund(transaction) {
+  return transaction.type === &quot;REFUND&quot;;
+}
+
+function processPayment(paymentTransaction) {
+  if (paymentTransaction.method === &quot;CREDIT_CARD&quot;) {
+    processCreditCardPayment(paymentTransaction);
+  } else if (paymentTransaction.method === &quot;PAYPAL&quot;) {
+    processPayPalPayment(paymentTransaction);
+  } else if (paymentTransaction.method === &quot;PLAN&quot;) {
+    processPlanPayment(paymentTransaction);
+  }
+}
+
+function processRefund(refundTransaction) {
+  if (refundTransaction.method === &quot;CREDIT_CARD&quot;) {
+    processCreditCardRefund(refundTransaction);
+  } else if (refundTransaction.method === &quot;PAYPAL&quot;) {
+    processPayPalRefund(refundTransaction);
+  } else if (refundTransaction.method === &quot;PLAN&quot;) {
+    processPlanRefund(refundTransaction);
+  }
+}
+
+function processCreditCardPayment(transaction) {
+  console.log(
+    &quot;Processing credit card payment for amount: &quot; + transaction.amount
+  );
+}
+
+function processCreditCardRefund(transaction) {
+  console.log(
+    &quot;Processing credit card refund for amount: &quot; + transaction.amount
+  );
+}
+
+function processPayPalPayment(transaction) {
+  console.log(&quot;Processing PayPal payment for amount: &quot; + transaction.amount);
+}
+
+function processPayPalRefund(transaction) {
+  console.log(&quot;Processing PayPal refund for amount: &quot; + transaction.amount);
+}
+
+function processPlanPayment(transaction) {
+  console.log(&quot;Processing plan payment for amount: &quot; + transaction.amount);
+}
+
+function processPlanRefund(transaction) {
+  console.log(&quot;Processing plan refund for amount: &quot; + transaction.amount);
+}
+</code></pre>
+<p>now everything is more concise and readable. Each function is clear as to what is going on, and we can argue that mostly everything is good in terms of levels of abstraction.</p>
+<p>however can you see a problem with the code that we have?</p>
+<p>take a look at these two functions</p>
+<pre class="prettyprint source lang-javascript"><code>processPayment();
+processRefund();
+</code></pre>
+<p>both these functions duplicate code and we should stay DRY(Don't repeat yourself) as possible.</p>
+<p>lets do a bit more refactoring but adding a couple functions as the following:</p>
+<pre class="prettyprint source lang-javascript"><code>function usesTransactionMethod(transaction, method) {
+  return transaction.method === method;
+}
+</code></pre>
+<p>and</p>
+<pre class="prettyprint source lang-javascript"><code>function processCreditCardTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processCreditCardPayment();
+  } else if (isRefund(transaction)) {
+    processCreditCardRefund();
+  } else {
+    showErrorMessage(&quot;Invalid transaction type!&quot;, transaction);
+  }
+}
+
+function processPayPalTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processPayPalPayment();
+  } else if (isRefund(transaction)) {
+    processPayPalRefund();
+  } else {
+    showErrorMessage(&quot;Invalid transaction type!&quot;, transaction);
+  }
+}
+function processPlanTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processPlanPayment();
+  } else if (isRefund(transaction)) {
+    processPlanRefund();
+  } else {
+    showErrorMessage(&quot;Invalid transaction type!&quot;, transaction);
+  }
+}
+</code></pre>
+<p>and now put it all together</p>
+<pre class="prettyprint source lang-javascript"><code>
+function processTransactions(transactions) {
+  if (isEmpty(transactions)) {
+    showErrorMessage('No transactions provided!');
+    return;
+  }
+
+  for (const transaction of transactions) {
+    processTransaction(transaction);
+  }
+}
+
+function isEmpty(transactions) {
+  return !transactions || transactions.length === 0;
+}
+
+function showErrorMessage(message, item) {
+  console.log(message);
+  if (item) {
+    console.log(item);
+  }
+}
+
+function processTransaction(transaction) {
+  if (!isOpen(transaction)) {
+    showErrorMessage('Invalid transaction type!');
+    return;
+  }
+
+  if (usesTransactionMethod(transaction, 'CREDIT_CARD')) {
+    processCreditCardTransaction(transaction);
+  } else if (usesTransactionMethod(transaction, 'PAYPAL')) {
+    processPayPalTransaction(transaction);
+  } else if (usesTransactionMethod(transaction, 'PLAN')) {
+    processPlanTransaction(transaction);
+  }
+}
+
+function isOpen(transaction) {
+  return transaction.status === 'OPEN';
+}
+
+function usesTransactionMethod(transaction, method) {
+  return transaction.method === method;
+}
+
+function isPayment(transaction) {
+  return transaction.type === 'PAYMENT';
+}
+
+function isRefund(transaction) {
+  return transaction.type === 'REFUND';
+}
+
+function processCreditCardTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processCreditCardPayment();
+  } else if (isRefund(transaction)) {
+    processCreditCardRefund();
+  } else {
+    showErrorMessage('Invalid transaction type!', transaction);
+  }
+}
+
+function processPayPalTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processPayPalPayment();
+  } else if (isRefund(transaction)) {
+    processPayPalRefund();
+  } else {
+    showErrorMessage('Invalid transaction type!', transaction);
+  }
+}
+
+function processPlanTransaction(transaction) {
+  if (isPayment(transaction)) {
+    processPlanPayment();
+  } else if (isRefund(transaction)) {
+    processPlanRefund();
+  } else {
+    showErrorMessage('Invalid transaction type!', transaction);
+  }
+}
+
+</code></pre>
+<h3>Embrace Errors &amp; Error Handling</h3>
+<p>Throwing = handling errors can replace if statements and lead to more focused functions</p>
+<blockquote>
+<p>simple rule: if something is an error -&gt; make it an error.</p>
+</blockquote>
+<pre class="prettyprint source lang-javascript"><code>if(!isEmail){
+    return {code: 422, message: &quot;Invalid input&quot;}
+}
+</code></pre>
+<p>we should use built in error handling logic</p>
+<pre class="prettyprint source lang-javascript"><code>if(!isEmail){
+    const error = new Error('Invalid Input');
+    error.code = 422;
+    throw error;
+}
+</code></pre>
+<p><a name="factory-functions"></a>
+<a name="polymorphism"></a></p>
+<h3>Factory Functions and Polymorphism</h3>
+<h4>What is a Factory Function?</h4>
+<p>A factory function is simply a function which is used to produce something, for example, to produce objects
+or produce maps, arrays, anything like that. We provide a certain input, and it then produces a certain object for us.</p>
+<h4>What is Polymorphism?</h4>
+<p>It means that we can have an object or a function, which we can always use in the same way,
+for example, an object on which we always can use the same method, but what this method does in detail,
+then depends on some other factors.</p>
+<p>Lets refactor the code we have been working on to use a factory function to handle processing Payments and Refunds.</p>
+<pre class="prettyprint source lang-javascript"><code>main();
+
+function main() {
+  try {
+    processTransactions(transactions);
+  } catch (error) {
+    showErrorMessage(error.message);
+  }
+}
+
+function processTransactions(transactions) {
+  validateTransactions(transactions);
+
+  for (const transaction of transactions) {
+    processTransaction(transaction);
+  }
+}
+
+function validateTransactions(transactions) {
+  if (isEmpty(transactions)) {
+    const error = new Error('No transactions provided!');
+    error.code = 1;
+    throw error;
+  }
+}
+
+function isEmpty(transactions) {
+  return !transactions || transactions.length === 0;
+}
+
+function showErrorMessage(message, item) {
+  console.log(message);
+  if (item) {
+    console.log(item);
+  }
+}
+
+function processTransaction(transaction) {
+  try {
+    validateTransaction(transaction);
+    processWithProcessor(transaction);
+  } catch (error) {
+    showErrorMessage(error.message, error.item);
+  }
+}
+
+function isOpen(transaction) {
+  return transaction.status === 'OPEN';
+}
+
+function validateTransaction(transaction) {
+  if (!isOpen(transaction)) {
+    const error = new Error('Invalid transaction type.');
+    throw error;
+  }
+
+  if (!isPayment(transaction) && !isRefund(transaction)) {
+    const error = new Error('Invalid transaction type!');
+    error.item = transaction;
+    throw error;
+  }
+}
+
+function processWithProcessor(transaction) {
+  const processors = getTransactionProcessors(transaction);
+
+  if (isPayment(transaction)) {
+    processors.processPayment(transaction);
+  } else {
+    processors.processRefund(transaction);
+  }
+}
+
+function getTransactionProcessors(transaction) {
+  let processors = {
+    processPayment: null,
+    processRefund: null,
+  };
+  if (usesTransactionMethod(transaction, 'CREDIT_CARD')) {
+    processors.processPayment = processCreditCardPayment;
+    processors.processRefund = processCreditCardRefund;
+  } else if (usesTransactionMethod(transaction, 'PAYPAL')) {
+    processors.processPayment = processPayPalPayment;
+    processors.processRefund = processPayPalRefund;
+  } else if (usesTransactionMethod(transaction, 'PLAN')) {
+    processors.processPayment = processPlanPayment;
+    processors.processRefund = processPlanRefund;
+  }
+  return processors;
+}
+
+function usesTransactionMethod(transaction, method) {
+  return transaction.method === method;
+}
+
+function isPayment(transaction) {
+  return transaction.type === 'PAYMENT';
+}
+
+function isRefund(transaction) {
+  return transaction.type === 'REFUND';
+}
+
+function processCreditCardPayment(transaction) {
+  console.log(
+    'Processing credit card payment for amount: ' + transaction.amount
+  );
+}
+
+function processCreditCardRefund(transaction) {
+  console.log(
+    'Processing credit card refund for amount: ' + transaction.amount
+  );
+}
+
+function processPayPalPayment(transaction) {
+  console.log('Processing PayPal payment for amount: ' + transaction.amount);
+}
+
+function processPayPalRefund(transaction) {
+  console.log('Processing PayPal refund for amount: ' + transaction.amount);
+}
+
+function processPlanPayment(transaction) {
+  console.log('Processing plan payment for amount: ' + transaction.amount);
+}
+
+function processPlanRefund(transaction) {
+  console.log('Processing plan refund for amount: ' + transaction.amount);
+}
+
+</code></pre>
 </article>
 
 </section>
@@ -243,7 +629,7 @@ function processTransactions(transactions) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 16 2021 11:34:16 GMT+0200 (South Africa Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 16 2021 13:52:38 GMT+0200 (South Africa Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
