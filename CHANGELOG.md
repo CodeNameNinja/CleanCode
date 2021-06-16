@@ -1,3 +1,14 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.2.0](https://github.com/CodeNameNinja/CleanCode/compare/v1.1.3...v1.2.0) (2021-06-16)
+
+
+### Features
+
+* add auto-changelog to project ([5703d25](https://github.com/CodeNameNinja/CleanCode/commit/5703d252364cc6e979094900299c8ae5d67358a9))
+
 ### Changelog
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
