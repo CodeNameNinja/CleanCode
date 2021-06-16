@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Tutorial: Objects-Classes-And-Data-Structures</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Tutorial: Objects-Classes-And-Data-Structures</h1>
+
+    <section>
+
+<header>
+    
+
+    <h2>Objects-Classes-And-Data-Structures</h2>
+</header>
+
+<article>
+    <h3>What this tutorial will cover</h3>
+<ol>
+<li>Classes, Objects &amp; Data Structures/Containers</li>
+<li>Object-Orientated Principals (SOLID, Law of Demeter)</li>
+<li>Polymorphism</li>
+</ol>
+<h4>What is an Object?</h4>
+<p>An Object is identified by the following:</p>
+<ol>
+<li>Private internals / properties, public API (methods)</li>
+<li>Contain your business logic (in OOP)</li>
+<li>Abstractions over concretions</li>
+</ol>
+<h4>What is a Data container / Data Structure?</h4>
+<p>Data container / Data Structure are identified by the following:</p>
+<ol>
+<li>Public internals / properties,</li>
+<li>(almost) no API (methods)</li>
+<li>Store and transport data</li>
+<li>Concretions only</li>
+</ol>
+<hr>
+<h4>Classes &amp; Polymorphism</h4>
+<blockquote>
+<p>Polymorphism is the ability of an object to take on many forms.</p>
+</blockquote>
+<p>The section is taken out of a blog post by Rachel Appel in a 4 part series on Typescript <a href="https://blog.jetbrains.com/webstorm/2019/03/write-object-oriented-typescript-polymorphism/">post</a></p>
+<h3>Implement polymorphism in TypeScript</h3>
+<p>When multiple classes inherit from a parent and override the same functionality, the result is polymorphism. Each of those child classes now implements a property or method, but they each may have their own way of performing that implementation.</p>
+<p>For example, both business and personal checking accounts can inherit from a parent checking account. Calling a method to open the business checking account might require that the code checks for a higher initial deposit than when opening a personal checking account. A business account might require multiple owners, where a personal checking account can have one or more. Alternatively, one child class might override the parent’s members while another child doesn’t but just accepts the parent class’s implementation instead. This also demonstrates polymorphic behavior, since those behaviors are different between the siblings.</p>
+<p>Polymorphism allows you to specify discrete logic that is customized for each specific child class. Let’s look at how this works with a CheckingAccount base class, and its two child classes: BusinessCheckingAccount and PersonalCheckingAccount.</p>
+<pre class="prettyprint source lang-javascript"><code>class CheckingAccount {
+  open(initialAmount: number) {
+    // code to open account and save in database
+  }
+}
+class BusinessCheckingAccount extends CheckingAccount {
+  open(initialAmount: number) {
+    if (initialAmount &lt; 1000) {
+      throw new Error(
+        &quot;Business accounts must have an initial deposit of 1.000 Euros&quot;
+      );
+    }
+    super.open(initialAmount);
+  }
+}
+class PersonalCheckingAccount extends CheckingAccount {
+  open(initialAmount: number) {
+    if (initialAmount &lt;= 0) {
+      throw new Error(
+        &quot;Personal accounts must have an initial deposit of more than zero Euros&quot;
+      );
+    }
+    super.open(initialAmount);
+  }
+}
+</code></pre>
+<p>As the previous code sample shows, the two child classes have different business rules to implement when it comes to opening an account – mainly different opening balances. Because both children have a method to open the account but both children choose to do it differently means the behavior is polymorphic.</p>
+<p>To achieve polymorphism, inherit from a base class, then override methods and write implementation code in them. In addition to overriding methods, you can overload methods to achieve polymorphism. Overloaded methods are methods that have different signatures (i.e., different data types or number of arguments) with the same name. However, in TypeScript, methods aren’t overloaded by simply modifying the types or number of arguments like in some other languages. To create an overload in TypeScript, you can either add optional arguments to a method, or overload function declarations in an interface and implement the interface.</p>
+<hr>
+<h3>Cohesion</h3>
+<h4>Maximum Cohesion</h4>
+<ol>
+<li>All methods each use all properties</li>
+<li>A highly cohesive object</li>
+</ol>
+<h4>No Cohesion</h4>
+<ol>
+<li>All methods don't use any class properties</li>
+<li>Data structure / container with utility methods</li>
+</ol>
+<p>The goal here is to write classes that are highly cohesive but are also a reasonable size.</p>
+<hr>
+<h3>Law of Demeter</h3>
+<blockquote>
+<p>The law of demeter is about the principle
+of least knowledge, which means your class shouldn't rely
+too much on the internals of strangers of other objects
+you are interacting with in your code.</p>
+</blockquote>
+<p>an example that violates the &quot;law of demeter&quot; is the following:</p>
+<pre class="prettyprint source lang-javascript"><code>this.customer.lastPurchase.date;
+</code></pre>
+<p>as you can tell we access properties of objects within objects.</p>
+<p>Now, why shouldn't we do that?
+Well, because whenever something changes
+about the internal structure of lastPurchase,
+all our code in this place where we have this line of code
+needs to change as well.</p>
+<p>And that then makes our code harder to extend and maintain
+because simple changes can result in a lot of changes
+in a lot of places of your application.</p>
+<h4>These are the principles of the Law of Demeter:</h4>
+<blockquote>
+<p>Code in a method may only access direct internals(properties and methods) of:</p>
+<ul>
+<li>the object it belongs to</li>
+<li>objects that are stored in properties of that object</li>
+<li>objects which are received as method parameters</li>
+<li>objects which are created in the method</li>
+</ul>
+</blockquote>
+<hr>
+<h4>The SOLID Principles</h4>
+<p>Now here's what these different characters stand for.</p>
+<p>The S principle is the single responsibility principle,</p>
+<p>O stands for open-closed principle,</p>
+<p>L for Liskov substitution principle,</p>
+<p>I for interface segregation principle,</p>
+<p>and D for dependency inversion principle.</p>
+<p>These are the SOLID principles</p>
+<h4>Single Responsibility Principle</h4>
+<p>Now the Single-Responsibility Principle
+in the end says
+that classes should have a single responsibility,</p>
+<p>And that a class shouldn't change
+for more than one reason, therefore.</p>
+<h4>The Open-Closed Principle</h4>
+<p>The open-closed principle says that a clause should be open
+for extension, but closed for modification.</p>
+<p>What does that mean?</p>
+<p>take a look at this example:</p>
+<pre class="prettyprint source lang-javascript"><code>class Printer {
+  printPDF(data: any) {
+    // ...
+  }
+
+  printWebDocument(data: any) {
+    // ...
+  }
+
+  printPage(data: any) {
+    // ...
+  }
+
+  verifyData(data: any) {
+    // ...
+  }
+}
+</code></pre>
+<p>Now what's the problem with this class?</p>
+<p>It basically needs to grow whenever
+we add new functionality.</p>
+<p>If we also want to print Word documents
+or Microsoft Excel spreadsheets,
+we need to add a new method.</p>
+<p>Whenever we need to call a new method, besides verify data
+from our print methods, we have to add the logic
+to all the print methods.</p>
+<p>So this printer class might have one responsibility.
+It's about printing data and about generating output
+but it actually is not closed for modification.</p>
+<p>lets refactor the code to follow the OCP</p>
+<pre class="prettyprint source lang-javascript"><code>interface Printer {
+  print(data: any);
+}
+
+class PrinterImplementation {
+  verifyData(data: any) {}
+}
+
+class WebPrinter extends PrinterImplementation implements Printer {
+  print(data: any) {
+    // print web document
+  }
+}
+
+class PDFPrinter extends PrinterImplementation implements Printer {
+  print(data: any) {
+    // print PDF document
+  }
+}
+
+class PagePrinter extends PrinterImplementation implements Printer {
+  print(data: any) {
+    // print real page
+  }
+}
+</code></pre>
+<p>Now we can add features without modifying the Printer Class. but by extending the Printer Class.</p>
+<h4>Liskov Substitution Principle</h4>
+<p>The Liskov Substitution Principle basically says
+that objects should be replaceable
+with instances of their subclasses
+without altering their behavior.</p>
+<p>for e.g:</p>
+<pre class="prettyprint source lang-javascript"><code>class Bird {
+    fly() {
+    console.log(&quot;Fyling...&quot;);
+  }
+}
+
+class Eagle extends Bird {
+  dive() {
+    console.log(&quot;Diving...&quot;);
+  }
+}
+
+const eagle = new Eagle();
+eagle.fly();
+eagle.dive();
+
+class Penguin extends Bird {
+  // Problem: Can't fly!
+}
+</code></pre>
+<p>now we can see that we our base class &quot;Bird&quot; is incorrect because a Penguin cannot fly and therefore this is an indicator telling us that we need to adjust this so the attributes of the class that we extend are only available to the class in a sensible manner</p>
+<p>Objects should be replaceable with instances of their subclasses without altering their behavior</p>
+<p>we can refactor as such:</p>
+<pre class="prettyprint source lang-javascript"><code>class Bird {}
+
+class FlyingBird extends Bird {
+  fly() {
+    console.log(&quot;Fyling...&quot;);
+  }
+}
+
+class Eagle extends FlyingBird {
+  dive() {
+    console.log(&quot;Diving...&quot;);
+  }
+}
+
+const eagle = new Eagle();
+eagle.fly();
+eagle.dive();
+
+class Penguin extends Bird {
+}
+</code></pre>
+<hr>
+<h4>Interface Segregation Principle</h4>
+<p>The interface segregation principles says
+that many client-specific interfaces are better
+than one general purpose interface.</p>
+<p>take a look at the following:</p>
+<pre class="prettyprint source lang-javascript"><code>interface Database {
+    connect(uri:string);
+    disconnect(data:any);
+}
+
+
+class SQLDatabase implements Database {
+  connect(uri: string) {
+    // connecting...
+  }
+
+  storeData(data: any) {
+    // Storing data...
+  }
+}
+class InMemoryDatabase implements Database {
+  connect(uri: string) {
+    // ???
+  }
+
+  storeData(data: any) {
+    // Storing data...
+  }
+}
+
+</code></pre>
+<p>So this principle is very similar to the Liskov Substitution Principle.
+but now we have the problem that we impose the wrong interface on a certain class, such as the inMemoryDatabase as it does not need a connect method.</p>
+<p>the Interface Segregation Principle states that we should</p>
+<blockquote>
+<p>have many client specific interfaces are better than one general purpose interface</p>
+</blockquote>
+<p>lets refactor as the following:</p>
+<pre class="prettyprint source lang-javascript"><code>interface Database {
+  storeData(data: any);
+}
+
+interface RemoteDatabase {
+  connect(uri: string);
+}
+
+class SQLDatabase implements Database, RemoteDatabase {
+  connect(uri: string) {
+    // connecting...
+  }
+
+  storeData(data: any) {
+    // Storing data...
+  }
+}
+
+class InMemoryDatabase implements Database {
+  storeData(data: any) {
+    // Storing data...
+  }
+}
+</code></pre>
+<hr>
+<h4>Dependency Inversion Principles</h4>
+<p>The Dependency Inversion Principle
+says that you should depend upon abstractions
+not concretions.</p>
+<p>take a look at the following:</p>
+<pre class="prettyprint source lang-javascript"><code>interface Database {
+  storeData(data: any);
+}
+
+interface RemoteDatabase {
+  connect(uri: string);
+}
+
+class SQLDatabase implements Database, RemoteDatabase {
+  connect(uri: string) {
+    console.log('Connecting to SQL database!');
+  }
+
+  storeData(data: any) {
+    console.log('Storing data...');
+  }
+}
+
+class InMemoryDatabase implements Database {
+  storeData(data: any) {
+    console.log('Storing data...');
+  }
+}
+
+class App {
+  private database: SQLDatabase | InMemoryDatabase;
+
+  constructor(database: SQLDatabase | InMemoryDatabase) {
+      if(database instanceof SQLDatabase) {
+          database.connect('my-url');                  
+      }
+    this.database = database; 
+  }
+
+  saveSettings() {
+    this.database.storeData('Some data');
+  }
+}
+</code></pre>
+<p>The problem with this example,
+is that we depend on concretions.</p>
+<p>I depend on the concrete implementation of my database.
+I accept both types here,
+and therefore I have to check which type I'm getting,
+so that I can execute this extra code,
+which I might need to execute.</p>
+<p>Now, it shouldn't be needless to say
+that code like this can be hard to maintain,
+because the more types of databases we add,
+the more if-checks we might need to add here,
+and whenever the connect method changes,
+we also need to change it in all the places
+where we do have a check like this
+and where we do call connect.</p>
+<p>lets refactor to the following:</p>
+<pre class="prettyprint source lang-javascript"><code>interface Database {
+  storeData(data: any);
+}
+
+interface RemoteDatabase {
+  connect(uri: string);
+}
+
+class SQLDatabase implements Database, RemoteDatabase {
+  connect(uri: string) {
+    console.log('Connecting to SQL database!');
+  }
+
+  storeData(data: any) {
+    console.log('Storing data...');
+  }
+}
+
+class InMemoryDatabase implements Database {
+  storeData(data: any) {
+    console.log('Storing data...');
+  }
+}
+
+class App {
+  private database: Database;
+
+  constructor(database: Database) {
+    this.database = database; 
+  }
+
+  saveSettings() {
+    this.database.storeData('Some data');
+  }
+}
+
+
+const sqlDatabase = new SQLDatabase();
+sqlDatabase.connect('my-url');
+const app = new App(sqlDatabase);
+</code></pre>
+<p>And then here in this app, we could say
+that in the end all we want is a database.</p>
+<p>I don't wanna deal with connecting here.
+I just want to ensure that the type of database I have here
+the type of disagreement is of type database.</p>
+<p>So it should be a class
+which implements the database interface.</p>
+<p>And the database interface
+in the end just ensures that there is a store data method,
+not that there is a connect method.</p>
+<p>So therefore of course, we should remove this if-check
+because we know we got a database
+which only has a store data method
+and we don't have a connect method here.</p>
+<p>Instead it's now the place where we create our app
+where we have to provide a database
+as expected by this class.</p>
+<p>And that's why it's called
+the Dependency Inversion Principle.</p>
+</article>
+
+</section>
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calculator.html">calculator</a></li></ul><h3>Classes</h3><ul><li><a href="Person.html">Person</a></li><li><a href="User.html">User</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-Clean-Code-Guidelines.html">Clean Code Guidelines</a></li><li><a href="tutorial-Control-Structures.html">Control Structures</a></li><li><a href="tutorial-Objects-Classes-And-Data-Structures.html">Objects-Classes-And-Data-Structures</a></li><li><a href="tutorial-git.html">Git</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addId">addId</a></li><li><a href="global.html#calculateTax">calculateTax</a></li><li><a href="global.html#grades">grades</a></li><li><a href="global.html#person1">person1</a></li><li><a href="global.html#student">student</a></li><li><a href="global.html#studentName">studentName</a></li><li><a href="global.html#sumUp">sumUp</a></li><li><a href="global.html#todo">todo</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 16 2021 20:46:23 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
