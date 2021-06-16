@@ -48,6 +48,7 @@ as you can see, its the same code, but way easier to read and understand.
 
 in conclusion to this, well-named "things" allow readers to **understand your code without going through it in detail**
 
+
 ---
 ### 1.How to name things correctly
 #### **variable & Constants**
@@ -333,3 +334,97 @@ in Low level operations, we control how the email is validated.
 
 Something else to note is that high level abstractions usually are easy to read - there is no room for interpretation, whereas low level operations might be technically clear but the interpretation must be added by the reader
 
+> Functions should do work that's one level of abstraction below their name
+
+Okay what does that mean?
+
+take a look at the example below:
+
+```javascript
+  function emailIsValid(email){
+      return email.includes('@');
+  };
+```
+
+as you can tell the name of the function expands/describes the low level implementation of what this function is doing, its important to understand that a function should be clear as to what its purpose is. the function its self is a high level abstraction of the low level code that is within the function, and that makes it easier to understand and interpret.
+
+take a look at the below and see how one should not use low level abstractions in a high level function.
+
+```javascript
+function saveUser(email){
+  if(email.includes('@')){
+    //...
+  }
+}
+```
+
+as you can tell the function name does not really interpret the low level code within the function. Yes it makes sense that function like this should have a step for validation but having the validation directly in this function is not clear and requires some additional thinking as to what is the purpose of the function.
+
+> a function like this should orchestrate all the steps that are required to save a user.
+
+#### Try not to mix levels of Abstraction ####
+
+take a look at the following: 
+```javascript
+  if(!email.includes('a')){
+    console.log('Invalid email!');
+  }else{
+    const user = new User(email);
+    user.save();
+  }
+```
+
+as you can see we are clearly mixing levels of abstraction here, and this forces the reader to read and understand and interpret each block of code to fully understand each step
+
+where as the following makes things a lot clearer and the reader only has to read the steps to understand the code.
+
+```javascript
+if(!isEmail(email)){
+  showError('Invalid Email');
+}else{
+  saveNewUser(email)
+}
+```
+
+#### Keeping functions short
+
+here are two rules of thumb that can help you identify when to split code or when to merge code.
+
+take a look at the following: 
+```javascript
+user.setAge(21);
+user.setName('Mitchell');
+```
+a rule of thumb
+> Extract code that works on the same functionality.
+
+we can simplify the above to a single function.
+
+```javascript
+  user.update({name: 'Mitchell', age: 21 });
+```
+
+the second rule of thumb.
+
+> Extract code that requires more interpretation than the surrounding code
+
+for e.g
+
+```javascript
+if(!email.includes('@')){...}
+  saveNewUser(email);
+```
+
+then we can easily see that this email.includes check requires more interpretation from our side than having a look at saveNewUser.
+
+There it's directly obvious what this does and why we're doing this. For email.includes, we have to add the extra meaning of email validation being done here.
+
+So changing it to this code to the following would bring it all back onto the same level of abstraction and on the same level of required interpretation, you could say.
+
+```javascript
+if(!isValid(email)){...}
+saveNewUser(email)
+```
+
+### Why Unit tests matter ### 
+Unit Tests matter because it forces you to write slim and focused functions which are easier to test and typically read and understand.

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Tutorial: ###</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Tutorial: ###</h1>
+
+    <section>
+
+<header>
+    
+
+    <h2>###</h2>
+</header>
+
+<article>
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>
+      Here is some guidelines that I would like to outline, to help myself and
+      anyone who comes across this documentation.
+    </h2>
+    <h2>
+      the following is a summary of what I have learnt in the Udemy Course by
+      <strong>Maximilian Schwarzmüller - Academind</strong>
+    </h2>
+    <a
+      href="https://www.udemy.com/course/writing-clean-code/learn/"
+      target="_blank"
+      >Clean Code Course</a
+    >
+
+    <h3>Topics</h3>
+    <ol>
+      <li>Name - Assigning Names to Variables, Functions & Classes</li>
+      <li>Code Structure, Comments &amp; Formatting</li>
+      <li>Functions &amp; Methods</li>
+      <li>Control Structures & Errors</li>
+      <li>Objects, Classes &amp; Data Containers / Structures</li>
+    </ol>
+
+    <h2>Nameing</h2>
+    <h3>Why Good Names Matter</h3>
+
+    <p>
+      Names should be meaningful, and should transport what a variable or
+      method/function should do.
+    </p>
+    <br />
+    <p>Here is an example of a poorly names piece of code:</p>
+    <pre><code>
+    const us = new MainEntity();
+    us.process();
+    if(login){
+        //...
+    } 
+    </code></pre>
+    <p>
+      as you can see nothing really makes sense from the get go. nothing is
+      straight forward and this code will mean that you will have to dig deeper
+      into each function and variable to understand its meaning.
+    </p>
+    <br />
+    <p>
+      take a look at an example where we refactor the above into code that is
+      more easy to understand.
+    </p>
+    <pre><code>
+    class User {
+        save() {}
+      }
+      
+      const isLoggedIn = true;
+      
+      const user = new User();
+      user.save();
+      
+      if (isLoggedIn) {
+        // ...
+      }
+    </code></pre>
+    <p>
+      as you can see, its the same code, but way easier to read and understand.
+    </p>
+    <br />
+    <p>
+      in conclusion to this, well-named "things" allow readers to
+      <strong>understand your code without going through it in detail</strong>
+    </p>
+    <br />
+    <h3>1.How to name things correctly</h3>
+    <h4><strong>variable & Constants</strong></h4>
+    <p>Use nouns or short phrases with adjectives e.g</p>
+    <pre><code>const userData = {...} </code></pre>
+    <br />
+    <p><strong>or</strong></p>
+    <pre><code>const isValid = ... </code></pre>
+    <h4><strong>Functions & Methods</strong></h4>
+    <p>use verbs or short phrases with adjectives <br />e.g</p>
+    <pre><code>
+    sendData();
+    inputIsValid();
+    </code></pre>
+    <br>
+    <h4><strong>Classes</strong></h4>
+    <p>use nouns or short phrases with nouns</p>
+    <pre><code>
+    class User {...}
+    class RequestBody {...} 
+    </code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>snake_case</th>
+                <th>camelCase</th>
+                <th>PascalCase</th>
+                <th>kebab-case</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>is_valid</td>
+                <td>isValid; SendResponse </td>
+                <td>AdminRole; UserRepository </td>
+                <td>&lt; side-drawer /&gt;</td>
+            </tr>
+        </tbody>
+    </table>
+  </body>
+</html>
+
+</article>
+
+</section>
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calculator.html">calculator</a></li></ul><h3>Classes</h3><ul><li><a href="Person.html">Person</a></li><li><a href="User.html">User</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial--___.html">###</a></li><li><a href="tutorial-Clean-Code-Guidelines.html">Clean Code Guidelines</a></li><li><a href="tutorial-calculator-tutorial.html">Calculator Tutorial</a></li><li><a href="tutorial-program-tutorial.html">Program Tutorial</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addId">addId</a></li><li><a href="global.html#calculateTax">calculateTax</a></li><li><a href="global.html#grades">grades</a></li><li><a href="global.html#person1">person1</a></li><li><a href="global.html#student">student</a></li><li><a href="global.html#studentName">studentName</a></li><li><a href="global.html#sumUp">sumUp</a></li><li><a href="global.html#todo">todo</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jun 15 2021 18:07:07 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
